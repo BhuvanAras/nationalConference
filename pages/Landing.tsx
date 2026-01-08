@@ -162,10 +162,10 @@ const Landing: React.FC = () => {
             <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch">
               <div className="p-8 bg-white rounded-3xl border-2 border-amber-400 shadow-lg flex flex-col justify-between">
                 <div>
-                  <h4 className="text-gray-700 uppercase text-xs font-bold tracking-widest mb-4">Research Scholar</h4>
-                  <p className="text-4xl font-extrabold mb-6">₹{FEES['Research Scholar']}</p>
+                  <h4 className="text-gray-700 uppercase text-xs font-bold tracking-widest mb-4">Industry Delegates</h4>
+                  <p className="text-4xl font-extrabold mb-6">₹{FEES['Industry Delegates']}</p>
                 </div>
-                <Link to={`/register?profession=${encodeURIComponent('Research Scholar')}`} className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors">Select Category</Link>
+                <Link to={`/register?profession=${encodeURIComponent('Industry Delegates')}`} className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors">Select Category</Link>
               </div>
               <div className="p-8 bg-white rounded-3xl border-2 border-amber-400 shadow-lg flex flex-col justify-between">
                 <div>
@@ -176,17 +176,17 @@ const Landing: React.FC = () => {
               </div>
               <div className="p-8 bg-white rounded-3xl border-2 border-amber-400 shadow-lg flex flex-col justify-between">
                 <div>
+                  <h4 className="text-gray-700 uppercase text-xs font-bold tracking-widest mb-4">Research Scholar</h4>
+                  <p className="text-4xl font-extrabold mb-6">₹{FEES['Research Scholar']}</p>
+                </div>
+                <Link to={`/register?profession=${encodeURIComponent('Research Scholar')}`} className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors">Select Category</Link>
+              </div>
+              <div className="p-8 bg-white rounded-3xl border-2 border-amber-400 shadow-lg flex flex-col justify-between">
+                <div>
                   <h4 className="text-gray-700 uppercase text-xs font-bold tracking-widest mb-4">Observer</h4>
                   <p className="text-4xl font-extrabold mb-6">₹{FEES['Observer']}</p>
                 </div>
                 <Link to={`/register?profession=${encodeURIComponent('Observer')}`} className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors">Select Category</Link>
-              </div>
-              <div className="p-8 bg-white rounded-3xl border-2 border-amber-400 shadow-lg flex flex-col justify-between">
-                <div>
-                  <h4 className="text-gray-700 uppercase text-xs font-bold tracking-widest mb-4">Industry Delegates</h4>
-                  <p className="text-4xl font-extrabold mb-6">₹{FEES['Industry Delegates']}</p>
-                </div>
-                <Link to={`/register?profession=${encodeURIComponent('Industry Delegates')}`} className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors">Select Category</Link>
               </div>
             </div>
             <p className="mt-8 text-gray-500 text-sm italic">* Certificates will be awarded for Participation, Paper Presentation, and Session Chair roles.</p>

@@ -175,20 +175,20 @@ const Details: React.FC = () => {
           <h2 className="text-2xl font-bold serif mb-8 uppercase tracking-widest text-center">Registration Fee</h2>
           <div className="max-w-md mx-auto space-y-4">
              <div className="flex justify-between items-center p-4 bg-white/10 rounded-2xl border border-white/10">
-                <span className="font-medium">Research Scholar</span>
-                <span className="text-2xl font-bold text-blue-200">₹{FEES['Research Scholar']}</span>
+                <span className="font-medium">Industry Delegates</span>
+                <span className="text-2xl font-bold text-blue-200">₹{FEES['Industry Delegates']}</span>
              </div>
              <div className="flex justify-between items-center p-4 bg-white/10 rounded-2xl border border-white/10">
                 <span className="font-medium">Academician/Faculty</span>
                 <span className="text-2xl font-bold text-blue-200">₹{FEES['Academician/Faculty']}</span>
              </div>
              <div className="flex justify-between items-center p-4 bg-white/10 rounded-2xl border border-white/10">
-                <span className="font-medium">Observer</span>
-                <span className="text-2xl font-bold text-blue-200">₹{FEES['Observer']}</span>
+                <span className="font-medium">Research Scholar</span>
+                <span className="text-2xl font-bold text-blue-200">₹{FEES['Research Scholar']}</span>
              </div>
              <div className="flex justify-between items-center p-4 bg-white/10 rounded-2xl border border-white/10">
-                <span className="font-medium">Industry Delegates</span>
-                <span className="text-2xl font-bold text-blue-200">₹{FEES['Industry Delegates']}</span>
+                <span className="font-medium">Observer</span>
+                <span className="text-2xl font-bold text-blue-200">₹{FEES['Observer']}</span>
              </div>
           </div>
           <p className="mt-8 text-center text-xs text-blue-300 italic">
