@@ -96,19 +96,19 @@ const Landing: React.FC = () => {
             <div className="grid md:grid-cols-3 gap-8">
               {TRACKS.map((track, i) => (
                 <div key={i} className="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-gray-100 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-12 -mt-12 transition-all group-hover:scale-150"></div>
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500 rounded-bl-full -mr-12 -mt-12 transition-all group-hover:scale-150"></div>
                   <div className="relative">
-                    <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-[10px] font-bold uppercase rounded-full mb-4">Track {i+1}</span>
+                    <span className="inline-block px-3 py-1 bg-white-100 text-amber-500 text-[20px] font-bold uppercase rounded-full mb-4">Track {i+1}</span>
                     <h3 className="text-xl font-bold mb-4 text-gray-900 serif leading-tight">{track.name}</h3>
                     <ul className="space-y-3">
                       {track.topics.slice(0, 3).map((topic, j) => (
                         <li key={j} className="text-xs text-gray-500 flex items-start gap-2">
-                          <span className="text-blue-500 font-bold">•</span>
+                          <span className="text-amber-500 font-bold">•</span>
                           {topic}
                         </li>
                       ))}
                     </ul>
-                    <Link to="/details" className="mt-6 inline-flex items-center text-blue-600 font-bold text-xs uppercase tracking-widest hover:gap-2 transition-all">
+                    <Link to="/details" className="mt-6 inline-flex items-center text-amber-500 font-bold text-xs uppercase tracking-widest hover:gap-2 transition-all">
                       View Full Track <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                     </Link>
                   </div>
@@ -125,9 +125,9 @@ const Landing: React.FC = () => {
               <div className="md:w-1/3">
                 <h2 className="text-3xl font-bold text-gray-900 serif mb-6">Important Dates</h2>
                 <p className="text-gray-600 mb-8">Mark your calendars for these critical milestones. Timely submission is key to paper acceptance.</p>
-                <div className="bg-blue-900 text-white p-6 rounded-2xl shadow-lg">
-                  <p className="text-xs text-blue-300 uppercase font-bold mb-2">Paper Format</p>
-                  <ul className="text-sm space-y-2 opacity-90">
+                <div className="bg-amber-500 text-white p-6 rounded-2xl shadow-lg">
+                  <p className="text-xs text-white uppercase font-bold mb-2">Paper Format</p>
+                  <ul className="text-sm space-y-2  text-white" >
                     <li>• MS Word document</li>
                     <li>• 150-200 Words Abstract</li>
                     <li>• 6-10 Pages Full Paper</li>
@@ -138,8 +138,8 @@ const Landing: React.FC = () => {
               <div className="md:w-2/3 w-full">
                 <div className="grid gap-6">
                   {IMPORTANT_DATES.map((date, i) => (
-                    <div key={i} className="flex items-center gap-6 p-6 bg-gray-50 rounded-2xl border border-gray-100 hover:border-blue-200 transition-all group">
-                      <div className="w-16 h-16 bg-white shadow-sm border border-gray-100 rounded-full flex flex-col items-center justify-center text-blue-900 group-hover:bg-blue-900 group-hover:text-white transition-colors">
+                    <div key={i} className="flex items-center gap-6 p-6 bg-gray-50 rounded-2xl border border-gray-100 hover:border-amber-500 transition-all group">
+                      <div className="w-16 h-16 bg-white shadow-sm border border-amber-500 rounded-full flex flex-col items-center justify-center text-black group-hover:bg-amber-500 group-hover:text-white transition-colors">
                         <span className="text-[10px] font-bold uppercase">{date.date.split(' ')[1].substring(0, 3)}</span>
                         <span className="text-xl font-bold">{date.date.split(' ')[0]}</span>
                       </div>
@@ -156,27 +156,27 @@ const Landing: React.FC = () => {
         </section>
 
         {/* Registration Fee Summary */}
-        <section className="py-24 bg-blue-900 text-white">
+        <section className="py-24 bg-amber-500 text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl font-bold serif mb-12">Registration Fee</h2>
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               <div className="p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20">
-                 <h4 className="text-blue-200 uppercase text-xs font-bold tracking-widest mb-4">Research Scholar</h4>
+                 <h4 className="text-black uppercase text-xs font-bold tracking-widest mb-4">Research Scholar</h4>
                  <p className="text-4xl font-extrabold mb-6">₹{FEES['Research Scholar']}</p>
                  <Link to="/register" className="block w-full py-3 bg-white text-blue-900 rounded-xl font-bold text-sm hover:bg-blue-50 transition-colors">Select Category</Link>
               </div>
-              <div className="p-8 bg-white text-blue-900 rounded-3xl border border-white/20 shadow-2xl transform md:scale-110 z-10">
-                 <h4 className="text-gray-400 uppercase text-xs font-bold tracking-widest mb-4">Academician/Faculty</h4>
+              <div className="p-8 bg-amber-500 text-white-900 rounded-3xl border border-white/20 shadow-2xl transform md:scale-110 z-10">
+                 <h4 className="text-black uppercase text-xs font-bold tracking-widest mb-4">Academician/Faculty</h4>
                  <p className="text-4xl font-extrabold mb-6">₹{FEES['Academician/Faculty']}</p>
                  <Link to="/register" className="block w-full py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors">Select Category</Link>
               </div>
               <div className="p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20">
-                 <h4 className="text-blue-200 uppercase text-xs font-bold tracking-widest mb-4">Observer</h4>
+                 <h4 className="text-black uppercase text-xs font-bold tracking-widest mb-4">Observer</h4>
                  <p className="text-4xl font-extrabold mb-6">₹{FEES['Observer']}</p>
                  <Link to="/register" className="block w-full py-3 bg-white text-blue-900 rounded-xl font-bold text-sm hover:bg-blue-50 transition-colors">Select Category</Link>
               </div>
             </div>
-            <p className="mt-12 text-blue-300 text-sm italic">* Certificates will be awarded for Participation, Paper Presentation, and Session Chair roles.</p>
+            <p className="mt-12 text-black-300 text-sm italic">* Certificates will be awarded for Participation, Paper Presentation, and Session Chair roles.</p>
           </div>
         </section>
 
