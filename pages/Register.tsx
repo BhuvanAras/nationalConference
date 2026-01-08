@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Profession, RegistrationData, RegistrationResult } from '../types';
@@ -17,12 +16,23 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
     ? professionParam 
     : Profession.RESEARCH_SCHOLAR;
 
+  // Mode Toggle: 'register' or 'login'
+  const [isLoginMode, setIsLoginMode] = useState(false);
+
+  // Registration Form Data
   const [formData, setFormData] = useState<RegistrationData>({
     fullName: '',
     mobile: '',
     email: '',
     profession: initialProfession,
-    amount: FEES[initialProfession]
+    amount: FEES[initialProfession],
+    password: ''
+  });
+
+  // Login Form Data
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: ''
   });
 
   const [idCardFile, setIdCardFile] = useState<File | null>(null);
@@ -45,14 +55,20 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setIdCardFile(e.target.files[0]);
     }
   };
 
-  const validate = () => {
+  const validateRegistration = () => {
     if (!formData.fullName.trim()) return "Full name is required";
+    if (!formData.password || formData.password.length < 6) return "Password must be at least 6 characters";
     if (!/^[6-9]\d{9}$/.test(formData.mobile)) return "Enter a valid 10-digit Indian mobile number";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) return "Enter a valid email address";
     if (!idCardFile && formData.profession !== Profession.OBSERVER) return "Please upload your valid ID Card";
@@ -69,7 +85,7 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
   };
 
   const processPayment = async () => {
-    const errorMsg = validate();
+    const errorMsg = validateRegistration();
     if (errorMsg) {
       setError(errorMsg);
       return;
@@ -159,18 +175,13 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
             amount: formData.amount,
             registration_id: registrationId,
             payment_id: paymentId,
-            // Storing base64 in DB is not ideal for large files, but works for quick prototype
-            // Ideally use Supabase Storage and store the URL
-            id_card_data: idCardBase64 
+            id_card_data: idCardBase64,
+            password: formData.password
           }
         ]);
 
       if (dbError) {
         console.error("Supabase save error:", dbError);
-        // Even if DB save fails, we might want to show success if payment worked?
-        // But better to warn. For now, we'll log it and proceed or show error.
-        // Let's assume we want to proceed but maybe alert the user or fallback.
-        // For this task, let's just log it and proceed to show the ticket.
       }
 
       onComplete(result);
@@ -182,99 +193,225 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
     }
   };
 
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsProcessing(true);
+    setError(null);
+
+    try {
+      const { data, error } = await supabase
+        .from('registrations')
+        .select('*')
+        .eq('email', loginData.email)
+        .eq('password', loginData.password)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
+        setError('No registration found with these details.');
+        setIsProcessing(false);
+        return;
+      }
+
+      // Map DB result to RegistrationResult type
+      const result: RegistrationResult = {
+        fullName: data.full_name,
+        mobile: data.mobile,
+        email: data.email,
+        profession: data.profession,
+        amount: data.amount,
+        registrationId: data.registration_id,
+        paymentId: data.payment_id,
+        paymentDate: data.created_at ? new Date(data.created_at).toLocaleDateString() : new Date().toLocaleDateString(),
+        idCardBase64: data.id_card_data
+      };
+
+      onComplete(result);
+
+    } catch (err) {
+      console.error("Login failed:", err);
+      setError("Invalid Email or Password. Please check and try again.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-white p-10 rounded-3xl shadow-xl border border-gray-100" id="registration-form">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-extrabold text-gray-900 serif">Register Now</h2>
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-extrabold text-gray-900 serif">
+            {isLoginMode ? 'Login' : 'Register Now'}
+          </h2>
           <p className="mt-2 text-sm text-gray-500 italic">Bharat Synapse @2047 Conference</p>
         </div>
 
-        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
-            <input
-              type="text"
-              name="fullName"
-              required
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-              placeholder="Your Name"
-              value={formData.fullName}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Mobile No.</label>
-              <input
-                type="tel"
-                name="mobile"
-                required
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                placeholder="10-digit number"
-                value={formData.mobile}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Category</label>
-              <select
-                name="profession"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white"
-                value={formData.profession}
-                onChange={handleInputChange}
-              >
-                {Object.values(Profession).map(p => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              name="email"
-              required
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-              placeholder="email@example.com"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          {formData.profession !== Profession.OBSERVER && (
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Institutional ID Card</label>
-              <input
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={handleFileChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 bg-gray-50 text-sm"
-              />
-            </div>
-          )}
-
-          <div className="bg-blue-900 p-4 rounded-2xl flex justify-between items-center shadow-inner">
-            <span className="text-blue-100 font-semibold text-sm">Amount to Pay:</span>
-            <span className="text-2xl font-bold text-white">₹{formData.amount}</span>
-          </div>
-
-          {error && <div className="text-red-600 text-xs bg-red-50 p-3 rounded-lg border border-red-100">{error}</div>}
-
+        {/* Toggle Tabs */}
+        <div className="flex p-1 bg-gray-100 rounded-xl mb-8">
           <button
-            type="button"
-            onClick={processPayment}
-            disabled={isProcessing}
-            className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg transform transition-all active:scale-95 ${
-              isProcessing ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+            onClick={() => { setIsLoginMode(false); setError(null); }}
+            className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${
+              !isLoginMode ? 'bg-white text-blue-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            {isProcessing ? 'Connecting to Bank...' : 'Confirm & Pay'}
+            New Registration
           </button>
-        </form>
+          <button
+            onClick={() => { setIsLoginMode(true); setError(null); }}
+            className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${
+              isLoginMode ? 'bg-white text-blue-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Already Registered?
+          </button>
+        </div>
+
+        {isLoginMode ? (
+          /* Login Form */
+          <form className="space-y-6" onSubmit={handleLoginSubmit}>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+              <input
+                type="email"
+                name="email"
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                placeholder="email@example.com"
+                value={loginData.email}
+                onChange={handleLoginChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+              <input
+                type="password"
+                name="password"
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                placeholder="••••••••"
+                value={loginData.password}
+                onChange={handleLoginChange}
+              />
+            </div>
+
+            {error && <div className="text-red-600 text-xs bg-red-50 p-3 rounded-lg border border-red-100">{error}</div>}
+
+            <button
+              type="submit"
+              disabled={isProcessing}
+              className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg transform transition-all active:scale-95 ${
+                isProcessing ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+              }`}
+            >
+              {isProcessing ? 'Verifying...' : 'Access Ticket'}
+            </button>
+          </form>
+        ) : (
+          /* Registration Form */
+          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+              <input
+                type="text"
+                name="fullName"
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                placeholder="Your Name"
+                value={formData.fullName}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Mobile No.</label>
+                <input
+                  type="tel"
+                  name="mobile"
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  placeholder="10-digit number"
+                  value={formData.mobile}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Category</label>
+                <select
+                  name="profession"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white"
+                  value={formData.profession}
+                  onChange={handleInputChange}
+                >
+                  {Object.values(Profession).map(p => (
+                    <option key={p} value={p}>{p}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                placeholder="email@example.com"
+                value={formData.email}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Create Password</label>
+              <input
+                type="password"
+                name="password"
+                required
+                minLength={6}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                placeholder="Minimum 6 characters"
+                value={formData.password}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            {formData.profession !== Profession.OBSERVER && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Institutional ID Card</label>
+                <input
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  onChange={handleFileChange}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 bg-gray-50 text-sm"
+                />
+              </div>
+            )}
+
+            <div className="bg-blue-900 p-4 rounded-2xl flex justify-between items-center shadow-inner">
+              <span className="text-blue-100 font-semibold text-sm">Amount to Pay:</span>
+              <span className="text-2xl font-bold text-white">₹{formData.amount}</span>
+            </div>
+
+            {error && <div className="text-red-600 text-xs bg-red-50 p-3 rounded-lg border border-red-100">{error}</div>}
+
+            <button
+              type="button"
+              onClick={processPayment}
+              disabled={isProcessing}
+              className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg transform transition-all active:scale-95 ${
+                isProcessing ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+              }`}
+            >
+              {isProcessing ? 'Connecting to Bank...' : 'Confirm & Pay'}
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );

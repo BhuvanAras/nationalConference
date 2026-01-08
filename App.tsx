@@ -21,6 +21,11 @@ const App: React.FC = () => {
     localStorage.setItem('conf_reg_result', JSON.stringify(result));
   };
 
+  const handleLogout = () => {
+    setRegResult(null);
+    localStorage.removeItem('conf_reg_result');
+  };
+
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
@@ -41,7 +46,7 @@ const App: React.FC = () => {
               path="/success" 
               element={
                 regResult 
-                  ? <Success data={regResult} /> 
+                  ? <Success data={regResult} onLogout={handleLogout} /> 
                   : <Navigate to="/register" replace />
               } 
             />

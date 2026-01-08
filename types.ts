@@ -13,6 +13,7 @@ export interface RegistrationData {
   profession: Profession;
   idCardBase64?: string;
   amount: number;
+  password?: string;
 }
 
 export interface RegistrationResult extends RegistrationData {
