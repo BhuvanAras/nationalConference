@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Profession, RegistrationData, RegistrationResult } from '../types';
 import { FEES } from '../constants';
 import { supabase } from '../supabaseClient';
+import { hashPassword, verifyPassword } from '../utils/auth';
 
 interface RegisterProps {
   onComplete: (result: RegistrationResult) => void;
@@ -18,6 +19,15 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
 
   // Mode Toggle: 'register' or 'login'
   const [isLoginMode, setIsLoginMode] = useState(false);
+
+  // Forgot Password State
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [serverOtp, setServerOtp] = useState<string | null>(null);
+  const [enteredOtp, setEnteredOtp] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [resetStep, setResetStep] = useState<'email' | 'otp' | 'newPassword'>('email');
 
   // Registration Form Data
   const [formData, setFormData] = useState<RegistrationData>({
@@ -38,6 +48,7 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
   const [idCardFile, setIdCardFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -75,6 +86,42 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
     return null;
   };
 
+  const checkDuplicate = async () => {
+    console.log("Checking duplicates for:", formData.email, formData.mobile);
+
+    // Check Email
+    const { data: emailData, error: emailError } = await supabase
+      .from('registrations')
+      .select('Email_id')
+      .eq('Email_id', formData.email);
+
+    console.log("Email check result:", { emailData, emailError });
+
+    if (emailError) {
+      console.error("Error checking email duplicate:", emailError);
+      // If error is not 'PGRST116' (no rows), we might want to assume safe or block? 
+      // Safest is to let it slide or alert user. For now logging.
+    }
+
+    if (emailData && emailData.length > 0) {
+      return "Email already registered. Please login.";
+    }
+
+    // Check Mobile
+    const { data: mobileData, error: mobileError } = await supabase
+      .from('registrations')
+      .select('Mobile number')
+      .eq('Mobile number', formData.mobile);
+
+    console.log("Mobile check result:", { mobileData, mobileError });
+
+    if (mobileData && mobileData.length > 0) {
+      return "Mobile number already registered.";
+    }
+
+    return null;
+  };
+
   const fileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -91,8 +138,16 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
       return;
     }
 
-    setError(null);
     setIsProcessing(true);
+    setError(null);
+
+    // Check for duplicates
+    const duplicateMsg = await checkDuplicate();
+    if (duplicateMsg) {
+      setError(duplicateMsg);
+      setIsProcessing(false);
+      return;
+    }
 
     const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
@@ -155,6 +210,8 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
         }
       }
 
+      const hashedPassword = await hashPassword(formData.password);
+
       const result: RegistrationResult = {
         ...formData,
         registrationId,
@@ -168,20 +225,21 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
         .from('registrations')
         .insert([
           {
-            full_name: formData.fullName,
-            mobile: formData.mobile,
-            email: formData.email,
-            profession: formData.profession,
-            amount: formData.amount,
-            registration_id: registrationId,
-            payment_id: paymentId,
-            id_card_data: idCardBase64,
-            password: formData.password
+            "Name": formData.fullName,
+            "Mobile number": formData.mobile,
+            "Email_id": formData.email,
+            "Category": formData.profession,
+            "amount": formData.amount,
+            "registration_id": registrationId,
+            "payment_id": paymentId,
+            "id_card_data": idCardBase64,
+            "Password": hashedPassword
           }
         ]);
 
       if (dbError) {
         console.error("Supabase save error:", dbError);
+        throw dbError;
       }
 
       onComplete(result);
@@ -199,29 +257,33 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
     setError(null);
 
     try {
+      // First fetch user by email
       const { data, error } = await supabase
         .from('registrations')
         .select('*')
-        .eq('email', loginData.email)
-        .eq('password', loginData.password)
+        .eq('Email_id', loginData.email)
         .single();
 
-      if (error) {
-        throw error;
+      if (error || !data) {
+        setError('No registration found with these details.');
+        setIsProcessing(false);
+        return;
       }
 
-      if (!data) {
-        setError('No registration found with these details.');
+      // Verify password
+      const isValid = await verifyPassword(loginData.password, data.Password);
+      if (!isValid) {
+        setError('Invalid Email or Password.');
         setIsProcessing(false);
         return;
       }
 
       // Map DB result to RegistrationResult type
       const result: RegistrationResult = {
-        fullName: data.full_name,
-        mobile: data.mobile,
-        email: data.email,
-        profession: data.profession,
+        fullName: data.Name,
+        mobile: data["Mobile number"],
+        email: data.Email_id,
+        profession: data.Category,
         amount: data.amount,
         registrationId: data.registration_id,
         paymentId: data.payment_id,
@@ -233,11 +295,168 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
 
     } catch (err) {
       console.error("Login failed:", err);
-      setError("Invalid Email or Password. Please check and try again.");
+      setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsProcessing(false);
     }
   };
+
+  // Forgot Password Handlers
+  const sendOtp = async () => {
+    if (!resetEmail) {
+      setError("Please enter your email.");
+      return;
+    }
+    
+    setIsProcessing(true);
+    setError(null);
+
+    // Check if email exists
+    const { data, error } = await supabase
+      .from('registrations')
+      .select('Email_id')
+      .eq('Email_id', resetEmail)
+      .maybeSingle();
+
+    if (!data) {
+      setError("Email address not found.");
+      setIsProcessing(false);
+      return;
+    }
+
+    // Generate OTP
+    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    setServerOtp(generatedOtp);
+    
+    // Simulate sending email (In production use EmailJS or Supabase Edge Functions)
+    console.log(`OTP for ${resetEmail}: ${generatedOtp}`);
+    alert(`DEMO MODE: Your OTP is ${generatedOtp}. In production, this would be emailed.`);
+    
+    setResetStep('otp');
+    setIsProcessing(false);
+    setSuccessMsg(`OTP sent to ${resetEmail}`);
+  };
+
+  const verifyOtp = () => {
+    if (enteredOtp === serverOtp) {
+      setResetStep('newPassword');
+      setSuccessMsg(null);
+      setError(null);
+    } else {
+      setError("Invalid OTP. Please try again.");
+    }
+  };
+
+  const resetPassword = async () => {
+    if (newPassword.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    setIsProcessing(true);
+    const hashedPassword = await hashPassword(newPassword);
+
+    const { error } = await supabase
+      .from('registrations')
+      .update({ "Password": hashedPassword })
+      .eq('Email_id', resetEmail);
+
+    if (error) {
+      setError("Failed to update password.");
+    } else {
+      setSuccessMsg("Password updated successfully! Please login.");
+      setTimeout(() => {
+        setShowForgotPassword(false);
+        setResetStep('email');
+        setResetEmail('');
+        setEnteredOtp('');
+        setNewPassword('');
+        setSuccessMsg(null);
+      }, 2000);
+    }
+    setIsProcessing(false);
+  };
+
+  if (showForgotPassword) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full bg-white p-10 rounded-3xl shadow-xl border border-gray-100">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-extrabold text-gray-900">Reset Password</h2>
+            <p className="mt-2 text-sm text-gray-500">Follow the steps to recover your account</p>
+          </div>
+
+          <div className="space-y-6">
+            {resetStep === 'email' && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Enter your registered Email</label>
+                <input
+                  type="email"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                />
+                <button
+                  onClick={sendOtp}
+                  disabled={isProcessing}
+                  className="w-full mt-4 py-3 rounded-xl text-white font-bold bg-blue-600 hover:bg-blue-700 transition-all"
+                >
+                  {isProcessing ? 'Sending...' : 'Send OTP'}
+                </button>
+              </div>
+            )}
+
+            {resetStep === 'otp' && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Enter OTP sent to email</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
+                  value={enteredOtp}
+                  onChange={(e) => setEnteredOtp(e.target.value)}
+                />
+                <button
+                  onClick={verifyOtp}
+                  className="w-full mt-4 py-3 rounded-xl text-white font-bold bg-blue-600 hover:bg-blue-700 transition-all"
+                >
+                  Verify OTP
+                </button>
+              </div>
+            )}
+
+            {resetStep === 'newPassword' && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Enter New Password</label>
+                <input
+                  type="password"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <button
+                  onClick={resetPassword}
+                  disabled={isProcessing}
+                  className="w-full mt-4 py-3 rounded-xl text-white font-bold bg-green-600 hover:bg-green-700 transition-all"
+                >
+                  {isProcessing ? 'Updating...' : 'Update Password'}
+                </button>
+              </div>
+            )}
+
+            {error && <div className="text-red-600 text-sm text-center bg-red-50 p-2 rounded">{error}</div>}
+            {successMsg && <div className="text-green-600 text-sm text-center bg-green-50 p-2 rounded">{successMsg}</div>}
+
+            <button
+              onClick={() => { setShowForgotPassword(false); setResetStep('email'); setError(null); }}
+              className="w-full text-center text-sm text-gray-500 hover:text-gray-700 mt-4"
+            >
+              Back to Login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -296,6 +515,16 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
                 value={loginData.password}
                 onChange={handleLoginChange}
               />
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
+                className="text-sm text-blue-600 hover:text-blue-800 font-semibold"
+              >
+                Forgot Password?
+              </button>
             </div>
 
             {error && <div className="text-red-600 text-xs bg-red-50 p-3 rounded-lg border border-red-100">{error}</div>}

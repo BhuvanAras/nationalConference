@@ -11,9 +11,9 @@ const ConferenceTicket: React.FC<TicketProps> = ({ data }) => {
   return (
     <div className="max-w-lg w-full bg-white border-2 border-dashed border-gray-300 rounded-3xl overflow-hidden shadow-2xl mx-auto">
       {/* Header */}
-      <div className="bg-blue-900 text-white p-6 text-center">
+      <div className="bg-amber-400 text-gray-900 p-6 text-center">
         <h2 className="text-2xl font-bold serif leading-tight">{CONFERENCE_INFO.title}</h2>
-        <p className="text-xs text-blue-200 mt-1 uppercase tracking-widest">{CONFERENCE_INFO.type}</p>
+        <p className="text-xs text-gray-800 mt-1 uppercase tracking-widest">{CONFERENCE_INFO.type}</p>
       </div>
       
       {/* Body */}
@@ -32,7 +32,7 @@ const ConferenceTicket: React.FC<TicketProps> = ({ data }) => {
             </div>
             <div className="text-right">
               <p className="text-xs text-gray-400 uppercase font-bold tracking-wider">Reg ID</p>
-              <p className="text-lg font-mono font-bold text-blue-900">{data.registrationId}</p>
+              <p className="text-lg font-mono font-bold text-amber-700">{data.registrationId}</p>
             </div>
           </div>
 

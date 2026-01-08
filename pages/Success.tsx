@@ -1,6 +1,8 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import ConferenceTicket from '../components/ConferenceTicket';
 import { RegistrationResult } from '../types';
 
@@ -10,6 +12,43 @@ interface SuccessProps {
 }
 
 const Success: React.FC<SuccessProps> = ({ data, onLogout }) => {
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownloadTicket = async () => {
+    const ticketElement = document.getElementById('conference-ticket');
+    if (!ticketElement) return;
+
+    setIsDownloading(true);
+    try {
+      const canvas = await html2canvas(ticketElement, {
+        scale: 2, // Higher scale for better quality
+        useCORS: true, // For external images like QR code
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // Calculate dimensions to fit nicely on A4
+      const imgWidth = 180; // mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const x = (210 - imgWidth) / 2; // Center horizontally
+      const y = 20; // Top margin
+
+      pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+      pdf.save(`Ticket-${data.registrationId}.pdf`);
+    } catch (error) {
+      console.error("Failed to generate PDF", error);
+      alert("Failed to download ticket. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-green-50 py-16 px-4">
       <div className="max-w-4xl mx-auto">
@@ -26,7 +65,9 @@ const Success: React.FC<SuccessProps> = ({ data, onLogout }) => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 items-start">
-          <ConferenceTicket data={data} />
+          <div id="conference-ticket">
+            <ConferenceTicket data={data} />
+          </div>
           
           <div className="space-y-6">
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-green-100">
@@ -62,11 +103,14 @@ const Success: React.FC<SuccessProps> = ({ data, onLogout }) => {
             </div>
 
             <button 
-              onClick={() => window.print()}
-              className="w-full py-3 bg-white border border-gray-200 text-gray-600 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-gray-50"
+              onClick={handleDownloadTicket}
+              disabled={isDownloading}
+              className="w-full py-3 bg-white border border-gray-200 text-gray-600 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-gray-50 disabled:opacity-50"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-              Print Ticket
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              {isDownloading ? 'Generating PDF...' : 'Download Ticket'}
             </button>
             
             <button 
