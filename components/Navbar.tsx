@@ -24,9 +24,14 @@ const Navbar: React.FC<NavbarProps> = ({ isRegistered }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-              <div className={`${isHome ? 'bg-white text-blue-900' : 'bg-blue-900 text-white'} p-1 rounded font-bold text-xs transition-colors`}>BS2047</div>
-              <span className={`${isHome ? 'text-white' : 'text-blue-900'} font-bold hidden md:block transition-colors`}>Bharat Synapse @2047</span>
+            <Link to="/" className="flex-shrink-0 flex items-center gap-3">
+              <img
+                src="/logoviksit.png"
+                alt="Viksit Bharat Logo"
+                className={`h-12 w-12 md:h-14 md:w-14 object-contain rounded  p-1 transition-all ${
+                  isHome ? 'shadow-lg' : 'shadow-sm'
+                }`}
+              />
             </Link>
           </div>
           <div className="flex items-center space-x-4">
