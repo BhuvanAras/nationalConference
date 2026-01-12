@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CONFERENCE_INFO, TRACKS, IMPORTANT_DATES, PATRONAGE, FEES, PAPER_FORMAT } from '../constants';
@@ -189,7 +188,7 @@ const Landing: React.FC = () => {
                 <Link to={`/register?profession=${encodeURIComponent('Observer')}`} className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors">Select Category</Link>
               </div>
             </div>
-            <p className="mt-8 text-gray-500 text-sm italic">* Certificates will be awarded for Participation, Paper Presentation, and Session Chair roles.</p>
+            <p className="mt-8 text-black text-sm italic">* Certificates will be awarded for Participation, Paper Presentation, and Session Chair roles.</p>
           </div>
         </section>
 
