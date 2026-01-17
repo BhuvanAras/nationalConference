@@ -37,9 +37,9 @@ export const PATRONAGE = {
 };
 
 export const PAPER_FORMAT = {
-  format: "MS Word document",
+  format: "PDF Document",
   fullPaperLength: "6–10 pages",
-  abstractLength: "150–200 words",
+  abstractLength: "300–500 words",
   fontType: "Times New Roman",
   bodyText: "12 pt",
   titleFormat: "14 pt, Bold, Centre",

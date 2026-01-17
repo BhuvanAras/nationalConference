@@ -30,7 +30,7 @@ const App: React.FC = () => {
     <Router>
       <div className="flex flex-col min-h-screen">
         <Navbar isRegistered={!!regResult} />
-        <main className="flex-grow">
+        <main className="flex-grow pt-28">
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/details" element={<Details />} />

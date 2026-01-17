@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Profession, RegistrationData, RegistrationResult } from '../types';
 import { FEES } from '../constants';
-import { supabase } from '../supabaseClient';
-import { hashPassword, verifyPassword } from '../utils/auth';
+
+const GOOGLE_FORM_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSeFZTZrYBeP0iqixb9CHqhdd-lOwhLl_w6z2uvMZqWU_pbB3w/viewform?usp=publish-editor';
 
 interface RegisterProps {
   onComplete: (result: RegistrationResult) => void;
@@ -85,257 +86,14 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
     if (!idCardFile && formData.profession !== Profession.OBSERVER) return "Please upload your valid ID Card";
     return null;
   };
-
-  const checkDuplicate = async () => {
-    console.log("Checking duplicates for:", formData.email, formData.mobile);
-
-    // Check Email
-    const { data: emailData, error: emailError } = await supabase
-      .from('registrations')
-      .select('Email_id')
-      .eq('Email_id', formData.email);
-
-    console.log("Email check result:", { emailData, emailError });
-
-    if (emailError) {
-      console.error("Error checking email duplicate:", emailError);
-      // If error is not 'PGRST116' (no rows), we might want to assume safe or block? 
-      // Safest is to let it slide or alert user. For now logging.
-    }
-
-    if (emailData && emailData.length > 0) {
-      return "Email already registered. Please login.";
-    }
-
-    // Check Mobile
-    const { data: mobileData, error: mobileError } = await supabase
-      .from('registrations')
-      .select('Mobile number')
-      .eq('Mobile number', formData.mobile);
-
-    console.log("Mobile check result:", { mobileData, mobileError });
-
-    if (mobileData && mobileData.length > 0) {
-      return "Mobile number already registered.";
-    }
-
-    return null;
+  
+  const processPayment = () => {
+    window.open(GOOGLE_FORM_URL, '_blank');
   };
 
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
-  };
-
-  const loadRazorpayCheckout = (): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      if ((window as any).Razorpay) {
-        resolve();
-        return;
-      }
-
-      const existingScript = document.querySelector(
-        'script[data-razorpay-checkout="true"]'
-      ) as HTMLScriptElement | null;
-
-      if (existingScript) {
-        existingScript.addEventListener('load', () => resolve(), { once: true });
-        existingScript.addEventListener('error', () => reject(new Error('Failed to load Razorpay')), { once: true });
-        return;
-      }
-
-      const checkoutUrl =
-        (import.meta.env.VITE_RAZORPAY_CHECKOUT_URL as string) ||
-        'https://checkout.razorpay.com/v1/checkout.js';
-
-      const script = document.createElement('script');
-      script.src = checkoutUrl;
-      script.async = true;
-      script.setAttribute('data-razorpay-checkout', 'true');
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error('Failed to load Razorpay'));
-      document.head.appendChild(script);
-    });
-  };
-
-  const processPayment = async () => {
-    const errorMsg = validateRegistration();
-    if (errorMsg) {
-      setError(errorMsg);
-      return;
-    }
-
-    setIsProcessing(true);
-    setError(null);
-
-    // Check for duplicates
-    const duplicateMsg = await checkDuplicate();
-    if (duplicateMsg) {
-      setError(duplicateMsg);
-      setIsProcessing(false);
-      return;
-    }
-
-    const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
-
-    // Fallback for demo if no key provided
-    if (!razorpayKey || razorpayKey === 'your_razorpay_key_id') {
-      if (window.confirm("Razorpay Key not found. Do you want to simulate a successful payment for testing?")) {
-         await handlePaymentSuccess('pay_SIMULATED_' + Math.random().toString(36).substr(2, 9));
-      } else {
-         setIsProcessing(false);
-         setError("Payment cancelled or configuration missing.");
-      }
-      return;
-    }
-
-    try {
-      await loadRazorpayCheckout();
-
-      if (!(window as any).Razorpay) {
-        throw new Error('Razorpay not available after script load');
-      }
-
-      const options = {
-        key: razorpayKey,
-        amount: formData.amount * 100,
-        currency: 'INR',
-        name: 'Bharat Synapse @2047',
-        description: `Registration for ${formData.profession}`,
-        handler: function (response: any) {
-          handlePaymentSuccess(response.razorpay_payment_id);
-        },
-        prefill: {
-          name: formData.fullName,
-          email: formData.email,
-          contact: formData.mobile
-        },
-        theme: {
-          color: '#1e3a8a'
-        },
-        modal: {
-          ondismiss: function() {
-            setIsProcessing(false);
-          }
-        }
-      };
-
-      const rzp = new (window as any).Razorpay(options);
-      rzp.open();
-      
-    } catch (err) {
-      console.error("Payment initialization failed:", err);
-      setError("Failed to initialize payment. Please try again.");
-      setIsProcessing(false);
-    }
-  };
-
-  const handlePaymentSuccess = async (paymentId: string) => {
-    try {
-      const registrationId = 'BS2047-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-      let idCardBase64 = '';
-      
-      if (idCardFile) {
-        try {
-          idCardBase64 = await fileToBase64(idCardFile);
-        } catch (e) {
-          console.error("File conversion failed", e);
-        }
-      }
-
-      const hashedPassword = await hashPassword(formData.password);
-
-      const result: RegistrationResult = {
-        ...formData,
-        registrationId,
-        paymentId,
-        paymentDate: new Date().toLocaleDateString(),
-        idCardBase64
-      };
-
-      // Save to Supabase
-      const { error: dbError } = await supabase
-        .from('registrations')
-        .insert([
-          {
-            "Name": formData.fullName,
-            "Mobile number": formData.mobile,
-            "Email_id": formData.email,
-            "Category": formData.profession,
-            "amount": formData.amount,
-            "registration_id": registrationId,
-            "payment_id": paymentId,
-            "id_card_data": idCardBase64,
-            "Password": hashedPassword
-          }
-        ]);
-
-      if (dbError) {
-        console.error("Supabase save error:", dbError);
-        throw dbError;
-      }
-
-      onComplete(result);
-    } catch (err) {
-      console.error("Registration processing failed:", err);
-      setError("Payment successful but registration failed. Please contact support.");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleLoginSubmit = async (e: React.FormEvent) => {
+  const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsProcessing(true);
-    setError(null);
-
-    try {
-      // First fetch user by email
-      const { data, error } = await supabase
-        .from('registrations')
-        .select('*')
-        .eq('Email_id', loginData.email)
-        .single();
-
-      if (error || !data) {
-        setError('No registration found with these details.');
-        setIsProcessing(false);
-        return;
-      }
-
-      // Verify password
-      const isValid = await verifyPassword(loginData.password, data.Password);
-      if (!isValid) {
-        setError('Invalid Email or Password.');
-        setIsProcessing(false);
-        return;
-      }
-
-      // Map DB result to RegistrationResult type
-      const result: RegistrationResult = {
-        fullName: data.Name,
-        mobile: data["Mobile number"],
-        email: data.Email_id,
-        profession: data.Category,
-        amount: data.amount,
-        registrationId: data.registration_id,
-        paymentId: data.payment_id,
-        paymentDate: data.created_at ? new Date(data.created_at).toLocaleDateString() : new Date().toLocaleDateString(),
-        idCardBase64: data.id_card_data
-      };
-
-      onComplete(result);
-
-    } catch (err) {
-      console.error("Login failed:", err);
-      setError("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsProcessing(false);
-    }
+    window.open(GOOGLE_FORM_URL, '_blank');
   };
 
   // Forgot Password Handlers
@@ -347,19 +105,6 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
     
     setIsProcessing(true);
     setError(null);
-
-    // Check if email exists
-    const { data, error } = await supabase
-      .from('registrations')
-      .select('Email_id')
-      .eq('Email_id', resetEmail)
-      .maybeSingle();
-
-    if (!data) {
-      setError("Email address not found.");
-      setIsProcessing(false);
-      return;
-    }
 
     // Generate OTP
     const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -391,26 +136,15 @@ const Register: React.FC<RegisterProps> = ({ onComplete }) => {
     }
 
     setIsProcessing(true);
-    const hashedPassword = await hashPassword(newPassword);
-
-    const { error } = await supabase
-      .from('registrations')
-      .update({ "Password": hashedPassword })
-      .eq('Email_id', resetEmail);
-
-    if (error) {
-      setError("Failed to update password.");
-    } else {
-      setSuccessMsg("Password updated successfully! Please login.");
-      setTimeout(() => {
-        setShowForgotPassword(false);
-        setResetStep('email');
-        setResetEmail('');
-        setEnteredOtp('');
-        setNewPassword('');
-        setSuccessMsg(null);
-      }, 2000);
-    }
+    setSuccessMsg("Password reset will be configured soon.");
+    setTimeout(() => {
+      setShowForgotPassword(false);
+      setResetStep('email');
+      setResetEmail('');
+      setEnteredOtp('');
+      setNewPassword('');
+      setSuccessMsg(null);
+    }, 2000);
     setIsProcessing(false);
   };
 

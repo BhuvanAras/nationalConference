@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CONFERENCE_INFO, TRACKS, IMPORTANT_DATES, PATRONAGE, FEES, PAPER_FORMAT } from '../constants';
 
+const GOOGLE_FORM_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSeFZTZrYBeP0iqixb9CHqhdd-lOwhLl_w6z2uvMZqWU_pbB3w/viewform?usp=publish-editor';
+
 const Landing: React.FC = () => {
+  const [patronSlide, setPatronSlide] = useState(0);
+
   const scrollToDetails = (e: React.MouseEvent) => {
     e.preventDefault();
     const element = document.getElementById('details-section');
@@ -11,13 +16,24 @@ const Landing: React.FC = () => {
     }
   };
 
+  const patronageItems = PATRONAGE.chiefPatrons;
+  const patronsPerSlide = 3;
+  const patronSlides = Math.ceil(patronageItems.length / patronsPerSlide);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setPatronSlide(prev => (prev + 1) % patronSlides);
+    }, 4000);
+    return () => clearInterval(id);
+  }, [patronSlides]);
+
   return (
-    <div className="relative scroll-smooth">
+    <div className="relative scroll-smooth -mt-28">
       {/* Hero Section */}
       <div className="relative bg-gray-900 text-white overflow-hidden min-h-screen flex items-center">
         <div className="absolute inset-0">
           <img 
-            src="/thumbnail2.png" 
+            src="/clg.jpg" 
             alt="Conference Background" 
             className="w-full h-full object-cover"
           />
@@ -37,13 +53,14 @@ const Landing: React.FC = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-6 pb-12">
-           
-            <Link 
-              to="/register" 
+            <a
+              href={GOOGLE_FORM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-10 py-4 bg-amber-400 text-white rounded-full font-bold hover:bg-blue-700 transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] transform hover:scale-105"
             >
               Register Now
-            </Link>
+            </a>
             <button 
               onClick={scrollToDetails}
               className="px-10 py-4 bg-white/10 text-white backdrop-blur-sm rounded-full font-bold hover:bg-white/20 transition-all border border-white/30 transform hover:scale-105"
@@ -60,27 +77,9 @@ const Landing: React.FC = () => {
         <section id="about" className="py-24 bg-white">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold text-gray-900 serif mb-8">About the Conference</h2>
-            <p className="text-gray-600 leading-relaxed text-lg mb-8">
+            <p className="text-gray-600 leading-relaxed text-lg">
               As India approaches its independence centenary, the vision of <strong>Viksit Bharat @2047</strong> calls for inclusive growth driven by innovation and sustainability. This conference brings together faculty, researchers, and scholars to engage in dialogue on India's future.
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-              <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                 <p className="text-2xl font-bold text-blue-900">100+</p>
-                 <p className="text-xs text-blue-700 uppercase font-bold tracking-wider">Researchers</p>
-              </div>
-              <div className="p-4 bg-green-50 rounded-xl border border-green-100">
-                 <p className="text-2xl font-bold text-green-900">3</p>
-                 <p className="text-xs text-green-700 uppercase font-bold tracking-wider">Tracks</p>
-              </div>
-              <div className="p-4 bg-purple-50 rounded-xl border border-purple-100">
-                 <p className="text-2xl font-bold text-purple-900">Selected</p>
-                 <p className="text-xs text-purple-700 uppercase font-bold tracking-wider">Publications</p>
-              </div>
-              <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
-                 <p className="text-2xl font-bold text-amber-900">Hybrid</p>
-                 <p className="text-xs text-amber-700 uppercase font-bold tracking-wider">Engagement</p>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -164,28 +163,56 @@ const Landing: React.FC = () => {
                   <h4 className="text-gray-700 uppercase text-xs font-bold tracking-widest mb-4">Research Scholar</h4>
                   <p className="text-4xl font-extrabold mb-6">₹{FEES['Research Scholar']}</p>
                 </div>
-                <Link to={`/register?profession=${encodeURIComponent('Research Scholar')}`} className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors">Select Category</Link>
+                <a
+                  href={GOOGLE_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors"
+                >
+                  Select Category
+                </a>
               </div>
               <div className="p-8 bg-white rounded-3xl border-2 border-amber-400 shadow-lg flex flex-col justify-between">
                 <div>
                   <h4 className="text-gray-700 uppercase text-xs font-bold tracking-widest mb-4">Industry Delegates</h4>
                   <p className="text-4xl font-extrabold mb-6">₹{FEES['Industry Delegates']}</p>
                 </div>
-                <Link to={`/register?profession=${encodeURIComponent('Industry Delegates')}`} className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors">Select Category</Link>
+                <a
+                  href={GOOGLE_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors"
+                >
+                  Select Category
+                </a>
               </div>
               <div className="p-8 bg-white rounded-3xl border-2 border-amber-400 shadow-lg flex flex-col justify-between">
                 <div>
                   <h4 className="text-gray-700 uppercase text-xs font-bold tracking-widest mb-4">Academician/Faculty</h4>
                   <p className="text-4xl font-extrabold mb-6">₹{FEES['Academician/Faculty']}</p>
                 </div>
-                <Link to={`/register?profession=${encodeURIComponent('Academician/Faculty')}`} className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors">Select Category</Link>
+                <a
+                  href={GOOGLE_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors"
+                >
+                  Select Category
+                </a>
               </div>
               <div className="p-8 bg-white rounded-3xl border-2 border-amber-400 shadow-lg flex flex-col justify-between">
                 <div>
                   <h4 className="text-gray-700 uppercase text-xs font-bold tracking-widest mb-4">Observer</h4>
                   <p className="text-4xl font-extrabold mb-6">₹{FEES['Observer']}</p>
                 </div>
-                <Link to={`/register?profession=${encodeURIComponent('Observer')}`} className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors">Select Category</Link>
+                <a
+                  href={GOOGLE_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-3 rounded-xl border-2 border-amber-400 text-amber-700 font-bold bg-white hover:bg-amber-50 transition-colors"
+                >
+                  Select Category
+                </a>
               </div>
             </div>
             <p className="mt-8 text-black text-sm italic">* Certificates will be awarded for Participation, Paper Presentation, and Session Chair roles.</p>
@@ -200,16 +227,60 @@ const Landing: React.FC = () => {
               <div className="w-24 h-1 bg-blue-900 mx-auto"></div>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-              {PATRONAGE.chiefPatrons.map((patron, i) => (
-                <div key={i} className="text-center">
-                  <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-100">
-                    <svg className="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/></svg>
-                  </div>
-                  <p className="text-sm font-bold text-gray-900 leading-tight mb-1">{patron.name}</p>
-                  <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{patron.role}</p>
+            <div className="relative">
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-700"
+                  style={{ transform: `translateX(-${patronSlide * 100}%)` }}
+                >
+                  {Array.from({ length: patronSlides }).map((_, slideIndex) => (
+                    <div
+                      key={slideIndex}
+                      className="w-full flex-shrink-0 grid grid-cols-2 md:grid-cols-3 gap-8"
+                    >
+                      {patronageItems
+                        .slice(
+                          slideIndex * patronsPerSlide,
+                          (slideIndex + 1) * patronsPerSlide
+                        )
+                        .map((patron, i) => (
+                          <div key={i} className="text-center">
+                            <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-100">
+                              <svg className="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                            <p className="text-sm font-bold text-gray-900 leading-tight mb-1">
+                              {patron.name}
+                            </p>
+                            <p className="text-[10px] text-gray-500 uppercase tracking-tighter">
+                              {patron.role}
+                            </p>
+                          </div>
+                        ))}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+
+              
+
+              <div className="flex justify-center mt-10 space-x-2">
+                {Array.from({ length: patronSlides }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setPatronSlide(i)}
+                    className={`h-2 w-2 rounded-full ${
+                      i === patronSlide ? 'bg-blue-900' : 'bg-gray-300'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
             
             <div className="mt-16 text-center">
@@ -227,7 +298,14 @@ const Landing: React.FC = () => {
            <h2 className="text-4xl font-bold text-gray-900 serif mb-6">Ready to Contribute?</h2>
            <p className="text-gray-600 text-lg mb-10">Join IFIM School of Technology for an interdisciplinary dialogue that shapes the future of Bharat.</p>
            <div className="flex flex-wrap justify-center gap-4">
-             <Link to="/register" className="bg-blue-900 text-white px-10 py-4 rounded-xl font-bold shadow-xl hover:bg-blue-800 transition-all">Start Registration</Link>
+             <a
+               href={GOOGLE_FORM_URL}
+               target="_blank"
+               rel="noopener noreferrer"
+               className="bg-blue-900 text-white px-10 py-4 rounded-xl font-bold shadow-xl hover:bg-blue-800 transition-all"
+             >
+               Start Registration
+             </a>
              <Link to="/details" className="bg-white border border-gray-200 text-gray-700 px-10 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all">Read Guidelines</Link>
            </div>
         </div>
