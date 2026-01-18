@@ -17,9 +17,9 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="font-semibold mb-4">Contact Info</h4>
             <p className="text-gray-800 text-sm">
-              Coordinator: {CONFERENCE_INFO.coordinator.name}<br />
+              {/* Coordinator: {CONFERENCE_INFO.coordinator.name}<br /> */}
               Email: {CONFERENCE_INFO.coordinator.email}<br />
-              Phone: {CONFERENCE_INFO.coordinator.phone}
+              Phone: {CONFERENCE_INFO.coordinator.phone}<br/>{CONFERENCE_INFO.coordinator.phone2}
             </p>
           </div>
           <div>
@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
             </p>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Scan for Brochure</h4>
+            <h4 className="font-semibold mb-4"></h4>
             <div className="bg-white p-2 inline-block rounded-lg">
               <img 
                 src="/brochure-qr.png" 

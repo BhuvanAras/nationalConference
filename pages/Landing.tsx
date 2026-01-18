@@ -224,7 +224,7 @@ const Landing: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold text-gray-900 serif mb-4">Conference Patronage</h2>
-              <div className="w-24 h-1 bg-blue-900 mx-auto"></div>
+              <div className="w-24 h-1 bg-amber-400 mx-auto"></div>
             </div>
             
             <div className="relative">
@@ -245,14 +245,8 @@ const Landing: React.FC = () => {
                         )
                         .map((patron, i) => (
                           <div key={i} className="text-center">
-                            <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-100">
-                              <svg className="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                  fillRule="evenodd"
-                                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
+                            <div className="w-36 h-36 rounded-full overflow-hidden mx-auto mb-4 border-2 border-amber-400">
+                              <img src={patron.photo} alt={patron.name} className="w-full h-full object-cover" />
                             </div>
                             <p className="text-sm font-bold text-gray-900 leading-tight mb-1">
                               {patron.name}
@@ -284,7 +278,7 @@ const Landing: React.FC = () => {
             </div>
             
             <div className="mt-16 text-center">
-               <Link to="/details" className="text-blue-900 font-bold hover:underline decoration-blue-900 decoration-2 underline-offset-4">
+               <Link to="/details" className="text-amber-400 font-bold hover:underline decoration-blue-900 decoration-2 underline-offset-4">
                  View All Chairs & General Committees
                </Link>
             </div>
@@ -295,14 +289,14 @@ const Landing: React.FC = () => {
       {/* CTA Section */}
       <section className="py-20 bg-gray-50 border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4 text-center">
-           <h2 className="text-4xl font-bold text-gray-900 serif mb-6">Ready to Contribute?</h2>
+           <h2 className="text-4xl font-bold text-amber-400 serif mb-6">Ready to Contribute?</h2>
            <p className="text-gray-600 text-lg mb-10">Join IFIM School of Technology for an interdisciplinary dialogue that shapes the future of Bharat.</p>
            <div className="flex flex-wrap justify-center gap-4">
              <a
                href={GOOGLE_FORM_URL}
                target="_blank"
                rel="noopener noreferrer"
-               className="bg-blue-900 text-white px-10 py-4 rounded-xl font-bold shadow-xl hover:bg-blue-800 transition-all"
+               className="bg-amber-400 text-white px-10 py-4 rounded-xl font-bold shadow-xl hover:bg-amber-400 transition-all"
              >
                Start Registration
              </a>

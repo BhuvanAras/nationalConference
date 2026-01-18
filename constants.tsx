@@ -11,28 +11,53 @@ export const CONFERENCE_INFO = {
   mode: "Hybrid (Online/Offline)",
   coordinator: {
     name: "Dr. Sunethra Chatterjee",
-    email: "conference.coord@ifim.edu.in",
-    phone: "+91 98765 43210"
+    email: " viksitbharat2026@ifim.edu.in",
+    phone: "+91 824 098 1218",
+    phone2: "+91 97421 11344"
   }
 };
 
+const CHIEF_PATRONS = [
+  { name: "Mr. Sanjay Padode", role: "Chairman, CDE", photo: "/thumbnail.png" },
+  { name: "Mrs. Kalpana Padode", role: "Secretary, CDE", photo: "/thumbnail1.png" },
+  { name: "Pranav Padode", role: "Chief Executive Officer", photo: "/thumbnail2.png" },
+  { name: "Kritika Padode Bhandari", role: "Founding Team Member", photo: "/thumbnail.png" },
+  { name: "Edwin Moses", role: "Chief Executive Officer, CDE", photo: "/thumbnail1.png" },
+  { name: "Dr. A V Arun Kumar", role: "Director, IFIM College", photo: "/thumbnail2.png" }
+];
+
 export const PATRONAGE = {
-  chiefPatrons: [
-    { name: "Mr. Sanjay Padode", role: "Chairman, CDE" },
-    { name: "Mrs. Kalpana Padode", role: "Secretary, CDE" },
-    { name: "Pranav Padode", role: "Chief Executive Officer" },
-    { name: "Kritika Padode Bhandari", role: "Founding Team Member" },
-    { name: "Edwin Moses", role: "Chief Executive Officer, CDE" },
-    { name: "Dr. A V Arun Kumar", role: "Director, IFIM College" }
-  ],
-  generalChairs: [
-    { name: "Dr. Sridevi Varanasi", role: "Principal and Director, IFIM College" },
-    { name: "Prof. Dr. Sakkthivel Annamalai Manickam", role: "Dean of Management, IFIM College" },
-    { name: "Dr. Salur Srikant Patnaik", role: "Dean of School of Technology, IFIM College" }
+  chiefPatrons: CHIEF_PATRONS,
+  Patron: [
+    { name: "Dr. Sridevi Varanasi", role: "Principal and Director, IFIM College", photo: "/Sridevi.webp" },
+    { name: "Prof. Dr. Sakkthivel Annamalai Manickam", role: "Dean of Management, IFIM College", photo: "/Prof.-Dr.-A.-M.-Sakkthivel.webp" },
+    { name: "Dr. Salur Srikant Patnaik", role: "Dean of School of Technology, IFIM College", photo: "/srikanth.png" },
+    { name: "Dr. Aswini Patro", role: "Principal, IFIM Law College", photo: "/aswini.webp" }
   ],
   conferenceChairs: [
-    { name: "Dr. Sunethra Chatterjee", role: "Assistant Professor, IFIM College" },
-    { name: "Dr. Vishal C", role: "Associate Professor, IFIM College" }
+    { name: "Dr. Vishal C", role: "Associate Professor, IFIM College", photo: "/Dr-Vishal-C.webp" },
+    { name: "Dr. Sunethra Chatterjee", role: "Assistant Professor, IFIM College", photo: "/mam.jpeg" }
+  ],
+  AdvisoryCommittee: [
+    { name: "Dr. Vidhya Pillai", role: "Asst. Dean, MBA, IFIM College", photo: "/Dr-Vidhya-Pillai .webp" },
+    { name: "Prof. Swarnika Dixit", role: "Asst. Dean, BBA-B.COM, IFIM College", photo: "/Swarnika.webp" },
+    { name: "Dr. H.S. Gitanjali", role: "Program Head, B.COM, IFIM College", photo: "/Dr-H.S.-Gitanjali-Shankarappa .webp" },
+    { name: "Dr. Sathya Thangavel", role: "HOD, Language Dept, IFIM College", photo: "/english.webp" },
+    { name: "Dr. Nataraja N S", role: "Area Chair, Analytics, IFIM College", photo: "/ns .webp" },
+    { name: "Prof. Nikil Gupta", role: "Professor of Practice, IFIM College", photo: "/Prof-Nikhil-Gupta- .webp" },
+    { name: "Prof. Pooja Ogale", role: "Asst. Professor, IFIM Law College", photo: "/Pooja-Ogle-Law-265x300.jpg" }
+  ],
+  organizingCommittee: [
+    { name: "Dr. Raj Kumar", role: "Organizing Committee Member, IFIM College", photo: "/raj.webp" },
+    { name: "Dr. Anant Jain", role: "Organizing Committee Member, IFIM College", photo: "/jain.jpeg" },
+    { name: "Dr. Arpit D Yadav", role: "Organizing Committee Member, IFIM College", photo: "/Arpit-Yadav_.jpg" },
+    { name: "Dr. Ajit M", role: "Organizing Committee Member, IFIM College", photo: "/thumbnail.png" },
+    { name: "Prof. Parth Saarthi", role: "Organizing Committee Member, IFIM College", photo: "/parth.jpeg" },
+    { name: "Prof. Haritha", role: "Organizing Committee Member, IFIM College", photo: "/thumbnail2.png" },
+    { name: "Prof. Sinzy Silvester", role: "Organizing Committee Member, IFIM College", photo: "/Prof.-Sinzy-Silvester .webp" },
+    { name: "Prof. Lakshmi Saranya", role: "Organizing Committee Member, IFIM College", photo: "/S-Lakshmi-Saranya-265x300.jpg" },
+    { name: "Prof. Dilip B", role: "Organizing Committee Member, IFIM College", photo: "/Prof-Dilip-B.webp" },
+    { name: "Prof. Sumiya", role: "Organizing Committee Member, IFIM College", photo: "/thumbnail.png" }
   ]
 };
 

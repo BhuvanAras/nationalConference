@@ -6,11 +6,8 @@ const GOOGLE_FORM_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLSeFZTZrYBeP0iqixb9CHqhdd-lOwhLl_w6z2uvMZqWU_pbB3w/viewform?usp=publish-editor';
 
 const IFIM_URL = 'https://ifim.edu.in/';
-interface NavbarProps {
-  isRegistered: boolean;
-}
 
-const Navbar: React.FC<NavbarProps> = ({ isRegistered }) => {
+const Navbar: React.FC = () => {
   const location = useLocation();
   const [onLightBackground, setOnLightBackground] = useState(false);
 
@@ -53,30 +50,22 @@ const Navbar: React.FC<NavbarProps> = ({ isRegistered }) => {
               <img
                 src="/logoviksit.png"
                 alt="Viksit Bharat Logo"
-                className="h-20 w-20 md:h-24 md:w-24 object-contain rounded transition-all"
+                className="h-23 w-24 md:h-26 md:w-26" 
+                // object-contain rounded transition-all"
               />
             </Link>
           </div>
           <div className="flex items-center space-x-4">
             <Link to="/" className={linkClass('/')}>Home</Link>
             <Link to="/details" className={linkClass('/details')}>Details</Link>
-            {!isRegistered ? (
-              <a
-                href={GOOGLE_FORM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-amber-400 text-blue-900 px-4 py-2 rounded-md text-sm font-semibold hover:bg-amber-500 transition-colors"
-              >
-                Register / Login
-              </a>
-            ) : (
-              <>
-                <Link to="/success" className={linkClass('/success')}>Ticket</Link>
-                <Link to="/abstract" className="bg-amber-400 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-amber-500 transition-colors">
-                  Upload Abstract
-                </Link>
-              </>
-            )}
+            <a
+              href={GOOGLE_FORM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-amber-400 text-blue-900 px-4 py-2 rounded-md text-sm font-semibold hover:bg-amber-500 transition-colors"
+            >
+              Register / Login
+            </a>
             <a
               href={IFIM_URL}
               target="_blank"
@@ -84,9 +73,9 @@ const Navbar: React.FC<NavbarProps> = ({ isRegistered }) => {
               className="flex items-center"
             >
               <img
-                src="/logoviksit1.png"
+                src="/logo.png"
                 alt="IFIM Institutions"
-                className="h-10 w-10 md:h-12 md:w-12 object-contain rounded-full bg-white/80 p-1"
+                className="h-12 w-12 md:h-14 md:w-14 "
               />
             </a>
           </div>

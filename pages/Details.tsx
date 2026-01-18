@@ -33,7 +33,7 @@ innovation-driven learning aligned with national priorities such as Viksit Bhara
 @2047.
 </p>
            
-            <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
+            {/* <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
                <h3 className="font-bold text-amber-900 mb-2">Vision Alignment: Viksit Bharat @2047</h3>
                <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-amber-800">
                  <li>• Knowledge-driven economic growth</li>
@@ -42,7 +42,7 @@ innovation-driven learning aligned with national priorities such as Viksit Bhara
                  <li>• Sustainable and inclusive development</li>
                  <li>• Ethical and responsible use of technology</li>
                </ul>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -94,7 +94,7 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
             <p className="text-black leading-relaxed mb-6">
               <strong>Bharat Synapse @2047</strong> is conceived as a national interdisciplinary academic platform that brings together faculty members, researchers, and scholars from diverse domains to engage in dialogue on India's future. The conference aims to integrate technology, management, and sustainability to foster research that contributes to national development and societal well-being.
             </p>
-            <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
+            {/* <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
                <h3 className="font-bold text-amber-900 mb-2">Vision Alignment: Viksit Bharat @2047</h3>
                <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-amber-800">
                  <li>• Knowledge-driven economic growth</li>
@@ -103,7 +103,7 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
                  <li>• Sustainable and inclusive development</li>
                  <li>• Ethical and responsible use of technology</li>
                </ul>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -222,10 +222,13 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
             <h2 className="text-2xl font-bold text-gray-900 serif mb-10 text-center uppercase tracking-widest border-b border-gray-100 pb-4">Patronage</h2>
             
             <div className="mb-12">
-              <h3 className="text-amber-600 font-bold uppercase text-xs tracking-widest text-center mb-6">Chief Patrons</h3>
+              <h3 className="text-amber-600 font-bold uppercase text-s tracking-widest text-center mb-6">Chief Patrons</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {PATRONAGE.chiefPatrons.map((p, i) => (
                   <div key={i} className="text-center p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="w-36 h-36 rounded-full overflow-hidden mx-auto mb-3 border-2 border-amber-400">
+                      <img src={p.photo} alt={p.name} className="w-full h-full object-cover" />
+                    </div>
                     <p className="font-bold text-gray-800 text-sm">{p.name}</p>
                     <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{p.role}</p>
                   </div>
@@ -233,28 +236,63 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-12">
-              <div>
-                <h3 className="text-amber-600 font-bold uppercase text-xs tracking-widest mb-6">General Chair</h3>
-                <div className="space-y-4">
-                  {PATRONAGE.generalChairs.map((p, i) => (
-                    <div key={i} className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                      <p className="font-bold text-gray-800 text-sm">{p.name}</p>
-                      <p className="text-[10px] text-gray-500">{p.role}</p>
+            <div className="mb-12">
+              <h3 className="text-amber-600 font-bold uppercase text-s tracking-widest text-center mb-6">Patron</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {PATRONAGE.Patron.map((p, i) => (
+                  <div key={i} className="text-center p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="w-36 h-36 rounded-full overflow-hidden mx-auto mb-3 border-2 border-amber-400">
+                      <img src={p.photo} alt={p.name} className="w-full h-full object-cover" />
                     </div>
-                  ))}
-                </div>
+                    <p className="font-bold text-gray-800 text-sm">{p.name}</p>
+                    <p className="text-[10px] text-gray-500">{p.role}</p>
+                  </div>
+                ))}
               </div>
-              <div>
-                <h3 className="text-amber-600 font-bold uppercase text-xs tracking-widest mb-6">Conference Chair</h3>
-                <div className="space-y-4">
-                  {PATRONAGE.conferenceChairs.map((p, i) => (
-                    <div key={i} className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                      <p className="font-bold text-gray-800 text-sm">{p.name}</p>
-                      <p className="text-[10px] text-gray-500">{p.role}</p>
+            </div>
+
+            <div className="mb-12">
+              <h3 className="text-amber-600 font-bold uppercase text-s tracking-widest text-center mb-6">Conference Chair</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {PATRONAGE.conferenceChairs.map((p, i) => (
+                  <div key={i} className="text-center p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-3 border-2 border-amber-400">
+                      <img src={p.photo} alt={p.name} className="w-full h-full object-cover" />
                     </div>
-                  ))}
-                </div>
+                    <p className="font-bold text-gray-800 text-sm">{p.name}</p>
+                    <p className="text-[10px] text-gray-500">{p.role}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-12">
+              <h3 className="text-amber-600 font-bold uppercase text-s tracking-widest text-center mb-6">Advisory Committee</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {PATRONAGE.AdvisoryCommittee.map((p, i) => (
+                  <div key={i} className="text-center p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="w-36 h-36 rounded-full overflow-hidden mx-auto mb-3 border-2 border-amber-400">
+                      <img src={p.photo} alt={p.name} className="w-full h-full object-cover" />
+                    </div>
+                    <p className="font-bold text-gray-800 text-sm">{p.name}</p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{p.role}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <h3 className="text-amber-600 font-bold uppercase text-s tracking-widest text-center mb-8">Organizing Committee Members</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {PATRONAGE.organizingCommittee.map((p, i) => (
+                  <div key={i} className="text-center p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="w-36 h-36 rounded-full overflow-hidden mx-auto mb-3 border-2 border-amber-400">
+                      <img src={p.photo} alt={p.name} className="w-full h-full object-cover" />
+                    </div>
+                    <p className="font-bold text-gray-800 text-sm">{p.name}</p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{p.role}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
