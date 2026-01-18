@@ -26,12 +26,32 @@ const CHIEF_PATRONS = [
   { name: "Dr. A V Arun Kumar", role: "Director, IFIM College", photo: "/arun.jpeg" }
 ];
 
+export const CHIEF_GUEST = {
+  name: "Dr. Govardhan Das",
+  role: "Chief Guest",
+  photo: "/iiser.png"
+};
+
+export const GUESTS = [
+  {
+    name: "JE Shashidhar",
+    role: "",
+    photo: "/guest1.png "
+  },
+  {
+    name: "Sai Kiran ",
+    role: "",
+    photo: "/guest2.png"
+  }
+];
+
 export const PATRONAGE = {
   chiefPatrons: CHIEF_PATRONS,
   Patron: [
-    { name: "Dr. Sridevi Varanasi", role: "Principal and Director, IFIM College", photo: "/Sridevi.webp" },
+    
     { name: "Prof. Dr. Sakkthivel Annamalai Manickam", role: "Dean of Management, IFIM College", photo: "/Prof.-Dr.-A.-M.-Sakkthivel.webp" },
     { name: "Dr. Salur Srikant Patnaik", role: "Dean of School of Technology, IFIM College", photo: "/srikanth.png" },
+    { name: "Dr. Sridevi Varanasi", role: "Principal and Director, IFIM College", photo: "/Sridevi.webp" },
     { name: "Dr. Aswini Patro", role: "Principal, IFIM Law College", photo: "/aswini.webp" }
   ],
   conferenceChairs: [

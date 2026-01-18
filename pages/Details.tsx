@@ -1,8 +1,31 @@
 
-import React from 'react';
-import { IMPORTANT_DATES, TRACKS, CONFERENCE_INFO, FEES, PATRONAGE, PAPER_FORMAT } from '../constants';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { IMPORTANT_DATES, TRACKS, CONFERENCE_INFO, FEES, PATRONAGE, PAPER_FORMAT, CHIEF_GUEST, GUESTS } from '../constants';
 
 const Details: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const state = (location.state || {}) as { section?: string };
+    const targetSection = state.section;
+    if (!targetSection) return;
+
+    const idMap: { [key: string]: string } = {
+      tracks: 'themes-tracks-section',
+      patronage: 'patronage-section',
+      guidelines: 'guidelines-section'
+    };
+
+    const targetId = idMap[targetSection];
+    if (!targetId) return;
+
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [location]);
+
   return (
     <div
       className="bg-gray-50 py-16 text-justify text-[17px]"
@@ -108,7 +131,7 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
         </div>
 
         {/* Section: Call for Paper & Scope */}
-        <div className="grid md:grid-cols-2 gap-12 mb-12">
+        <div id="guidelines-section" className="grid md:grid-cols-2 gap-12 mb-12">
           <div className="group bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-gray-100 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400 rounded-bl-full -mr-12 -mt-12 transition-all group-hover:scale-150"></div>
             <div className="relative">
@@ -188,7 +211,7 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
         </div>
 
         {/* Section: Themes */}
-        <div className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100 mb-12">
+        <div id="themes-tracks-section" className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100 mb-12">
           <h2 className="text-2xl font-bold text-gray-900 serif mb-8 uppercase tracking-tight">Themes & Tracks</h2>
           <div className="space-y-12">
             {TRACKS.map((track, i) => (
@@ -215,8 +238,65 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
           </div>
         </div>
 
-        {/* Section: Patronage */}
+        {/* Section: About Patronage */}
         <div className="group bg-white p-8 md:p-12 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-gray-100 mb-12 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400 rounded-bl-full -mr-12 -mt-12 transition-all group-hover:scale-150"></div>
+          <div className="relative max-w-4xl mx-auto text-center">
+            <h2 className="text-2xl font-bold text-gray-900 serif mb-4 uppercase tracking-widest text-amber-500">Chief Guest</h2>
+            <div className="flex flex-col items-center mb-6">
+              <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-amber-400 shadow-lg mb-4">
+                <img
+                  src={CHIEF_GUEST.photo}
+                  alt={CHIEF_GUEST.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="text-2xl font-bold text-gray-900 serif mb-1">{CHIEF_GUEST.name}</p>
+              <p className="text-sm text-gray-500 italic max-w-xl">{CHIEF_GUEST.role}</p>
+            </div>
+            <p className="text-black leading-relaxed mb-4 text-justify">
+              Prof. Das completed his doctorate (Ph.D.) in Immunology - Host pathogen relationship,
+ from the Institute of Microbial Technology, Chandigarh in 1997. He is associated with
+ reputed professional organizations such as Molecular Immunology Forum, and Guha
+ Research Council. Prof. Das also holds editorial positions as associate editor in various
+ prestigious journals
+            </p>
+            <p className="text-black leading-relaxed text-justify">
+               Prof. Das’s inspirational leadership has the potential to create a ripple effect of positive
+ change in the institute. By fostering a culture of innovation, collaboration, personal
+ growth, and adaptability, the institute can experience significant growth and development
+ under his guidance
+            </p>
+             <p className="text-black leading-relaxed text-justify">
+            Prof. Das also holds honorary positions as Adjunct Professor, Houston Methodist
+ Research Institute, Houston, USA, and Adjunct Professor, Shoochow University,
+ Suzhou, China. Previously, he served as visiting Professor in many renowned Universities
+ amongst the world. He visited USA, Canada, Australia, Japan, China, Finland, Greece,
+ England with various task.</p>
+          </div>
+        </div>
+
+        {/* Section: Guests */}
+        <div className="group bg-white p-8 md:p-12 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-gray-100 mb-12 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400 rounded-bl-full -mr-12 -mt-12 transition-all group-hover:scale-150"></div>
+          <div className="relative">
+            <h2 className="text-2xl font-bold text-gray-900 serif mb-8 text-center uppercase tracking-widest">Guests</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {GUESTS.map((guest, i) => (
+                <div key={i} className="text-center p-6 bg-gray-50 rounded-3xl border border-gray-100">
+                  <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-4 border-2 border-amber-400">
+                    <img src={guest.photo} alt={guest.name} className="w-full h-full object-cover" />
+                  </div>
+                  <p className="font-bold text-gray-900 text-lg mb-1">{guest.name}</p>
+                  <p className="text-sm text-gray-500 mb-3">{guest.role}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Section: Patronage */}
+        <div id="patronage-section" className="group bg-white p-8 md:p-12 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-gray-100 mb-12 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400 rounded-bl-full -mr-12 -mt-12 transition-all group-hover:scale-150"></div>
           <div className="relative">
             <h2 className="text-2xl font-bold text-gray-900 serif mb-10 text-center uppercase tracking-widest border-b border-gray-100 pb-4">Patronage</h2>

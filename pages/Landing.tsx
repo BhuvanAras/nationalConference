@@ -106,7 +106,11 @@ const Landing: React.FC = () => {
                         </li>
                       ))}
                     </ul>
-                    <Link to="/details" className="mt-6 inline-flex items-center text-amber-500 font-bold text-xs uppercase tracking-widest hover:gap-2 transition-all">
+                    <Link
+                      to="/details"
+                      state={{ section: 'tracks' }}
+                      className="mt-6 inline-flex items-center text-amber-500 font-bold text-xs uppercase tracking-widest hover:gap-2 transition-all"
+                    >
                       View Full Track <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                     </Link>
                   </div>
@@ -278,7 +282,11 @@ const Landing: React.FC = () => {
             </div>
             
             <div className="mt-16 text-center">
-               <Link to="/details" className="text-amber-400 font-bold hover:underline decoration-amber-400 decoration-2 underline-offset-4">
+               <Link
+                 to="/details"
+                 state={{ section: 'patronage' }}
+                 className="text-amber-400 font-bold hover:underline decoration-amber-400 decoration-2 underline-offset-4"
+               >
                  View All Chairs & General Committees
                </Link>
             </div>
@@ -300,7 +308,13 @@ const Landing: React.FC = () => {
              >
                Start Registration
              </a>
-             <Link to="/details" className="bg-white border border-gray-200 text-gray-700 px-10 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all">Read Guidelines</Link>
+             <Link
+               to="/details"
+               state={{ section: 'guidelines' }}
+               className="bg-white border border-gray-200 text-gray-700 px-10 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all"
+             >
+               Read Guidelines
+             </Link>
            </div>
         </div>
       </section>
