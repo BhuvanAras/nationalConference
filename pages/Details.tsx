@@ -83,7 +83,7 @@ offering hands-on experience in software development, data science, artificial
 intelligence, cloud computing, cybersecurity, and web technologies. Through projectbased learning, internships, and industry collaboration, students apply theory to realworld challenges and develop critical thinking, innovation, and lifelong learning skills.
             </p>
             
-            <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
+            {/* <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
                <h3 className="font-bold text-amber-900 mb-2">Vision Alignment: Viksit Bharat @2047</h3>
                <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-amber-800">
                  <li>• Knowledge-driven economic growth</li>
@@ -92,7 +92,7 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
                  <li>• Sustainable and inclusive development</li>
                  <li>• Ethical and responsible use of technology</li>
                </ul>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -115,9 +115,9 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
               As India approaches the centenary of its independence in 2047, the national vision of <strong>Viksit Bharat @2047</strong> calls for inclusive growth driven by innovation, knowledge, and sustainability. Achieving this vision requires active participation from academic institutions as creators of knowledge and responsible innovation.
             </p>
             <p className="text-black leading-relaxed mb-6">
-              <strong>Bharat Synapse @2047</strong> is conceived as a national interdisciplinary academic platform that brings together faculty members, researchers, and scholars from diverse domains to engage in dialogue on India's future. The conference aims to integrate technology, management, and sustainability to foster research that contributes to national development and societal well-being.
+              <strong>Bharat Synapse@2047</strong> is conceived as a national interdisciplinary academic platform that brings together faculty members, researchers, and scholars from diverse domains to engage in dialogue on India's future. The conference aims to integrate technology, management, and sustainability to foster research that contributes to national development and societal well-being.
             </p>
-            {/* <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
+            <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
                <h3 className="font-bold text-amber-900 mb-2">Vision Alignment: Viksit Bharat @2047</h3>
                <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-amber-800">
                  <li>• Knowledge-driven economic growth</li>
@@ -126,7 +126,7 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
                  <li>• Sustainable and inclusive development</li>
                  <li>• Ethical and responsible use of technology</li>
                </ul>
-            </div> */}
+            </div>
           </div>
         </div>
 
@@ -242,7 +242,7 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
         <div className="group bg-white p-8 md:p-12 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-gray-100 mb-12 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400 rounded-bl-full -mr-12 -mt-12 transition-all group-hover:scale-150"></div>
           <div className="relative max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl font-bold text-gray-900 serif mb-4 uppercase tracking-widest text-amber-500">Chief Guest</h2>
+            <h2 className="text-2xl font-bold text-gray-900 serif mb-4 uppercase tracking-widest text-gray-8  00">Chief Guest</h2>
             <div className="flex flex-col items-center mb-6">
               <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-amber-400 shadow-lg mb-4">
                 <img
@@ -279,8 +279,8 @@ intelligence, cloud computing, cybersecurity, and web technologies. Through proj
         {/* Section: Guests */}
         <div className="group bg-white p-8 md:p-12 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-gray-100 mb-12 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400 rounded-bl-full -mr-12 -mt-12 transition-all group-hover:scale-150"></div>
-          <div className="relative">
-            <h2 className="text-2xl font-bold text-gray-900 serif mb-8 text-center uppercase tracking-widest">Guests</h2>
+          <div className="relative text-center">
+            <h2 className="text-2xl font-bold text-amber-400 serif mb-4 uppercase tracking-widest text-gray-800">Guests</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {GUESTS.map((guest, i) => (
                 <div key={i} className="text-center p-6 bg-gray-50 rounded-3xl border border-gray-100">
